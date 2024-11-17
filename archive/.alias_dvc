@@ -1,0 +1,5 @@
+#!/bin/bash
+
+alias d='dvc status'
+alias dl='dvc list . --dvc-only'
+alias drem='dvc remote list'

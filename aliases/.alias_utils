@@ -1,0 +1,166 @@
+#!/bin/bash
+
+# --------------------------------------------------------------
+# general use
+# --------------------------------------------------------------
+
+alias qwe='src && clear'
+alias hist='history'
+
+# --------------------------------------------------------------
+# custom functions
+# --------------------------------------------------------------
+
+# Function to create a new directory and change into it
+mkcd() {
+    mkdir "$1"
+    cd "$1"
+}
+
+# Function to display the provided message
+show() {
+    if [ "$1" = "--help" ]; then
+        local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
+        local valid_files=()
+        for file in "${files[@]}"; do
+            valid_files+=("$(basename "$file" | sed 's/.alias_//')")
+        done
+        echo "Available files: ${valid_files[*]}"
+        return
+    fi
+
+    local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
+    local valid_files=()
+    for file in "${files[@]}"; do
+        valid_files+=("$(basename "$file" | sed 's/.alias_//')")
+    done
+
+    if [[ " ${valid_files[*]} " == *" $1 "* ]]; then
+        if [ "$2" = "--edit" ] || [ "$2" = "-e" ]; then
+            ${EDITOR:-code} "$ALIASES_DIR"/.alias_$1
+        else
+            if command -v bat >/dev/null; then
+                bat "$ALIASES_DIR"/.alias_$1
+            else
+                cat "$ALIASES_DIR"/.alias_$1
+            fi
+        fi
+    else
+        echo "Invalid argument. Please provide one of the following: ${valid_files[*]}."
+    fi
+}
+
+# This function removes temporary files and directories to free up space.
+clean() {
+    local directory="$1"
+    # Check that the directory exists
+    if [ ! -d "$directory" ]; then
+        echo "Directory '$directory' not found"
+        return
+    fi
+    # Delete all __pycache__ directories
+    find "$directory" -type d -name '__pycache__' -print -exec rm -rf {} \; 2>/dev/null
+    # Delete all .DS_Store files
+    find "$directory" -type f -name '.DS_Store' -print -exec rm -f {} \; 2>/dev/null
+    # Delete all catboost_info files
+    find "$directory" -type d -name 'catboost_info' -print -exec rm -r {} \; 2>/dev/null
+    # Delete all .ruff_cache files
+    find "$directory" -type d -name '.ruff_cache' -print -exec rm -r {} \; 2>/dev/null
+    # Delete all .ipynb_checkpoints files
+    find "$directory" -type d -name '.ipynb_checkpoints' -print -exec rm -r {} \; 2>/dev/null
+}
+
+# Extracts a specific element from a list based on the provided index.
+extract() {
+    if [ $# -lt 1 ]; then
+        echo "Usage: $(basename "$0") file"
+        exit 1
+    fi
+    if [ -f "$1" ]; then
+        case $1 in
+        *.tar.xz) tar -xvf "$1" ;;
+        *.tar.bz2) tar -jxvf "$1" ;;
+        *.tar.gz) tar -zxvf "$1" ;;
+        *.bz2) bunzip2 "$1" ;;
+        *.dmg) hdiutil mount "$1" ;;
+        *.gz) gunzip "$1" ;;
+        *.tar) tar -xvf "$1" ;;
+        *.tbz2) tar -jxvf "$1" ;;
+        *.tgz) tar -zxvf "$1" ;;
+        *.zip) unzip "$1" ;;
+        *.pax) cat "$1" | pax -r ;;
+        *.pax.z) uncompress "$1" --stdout | pax -r ;;
+        *.rar) 7z x "$1" ;;
+        *.z) uncompress "$1" ;;
+        *.7z) 7z x "$1" ;;
+        *) echo "'$1' cannot be extracted/mounted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Function to create a generic .gitignore file
+gitig() {
+    cat <<EOL >.gitignore
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+Thumbs.db
+
+# Python #
+##########
+*.py[cod]
+__pycache__/
+*.so
+
+# Jupyter Notebook #
+####################
+.ipynb_checkpoints
+
+# Virtualenv #
+##############
+.venv/
+venv/
+ENV/
+env/
+.Python
+pythonenv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments #
+################
+.env
+.env.*
+EOL
+    echo ".gitignore file created successfully."
+}

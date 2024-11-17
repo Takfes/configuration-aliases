@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# ----------------------------- List Objects -------------------------- #
+alias di='docker image ls'
+alias dv="docker volume ls"
+alias dp="docker ps -a --format 'table {{.Names}}\t{{.ID}}\t{{.Image}}\t{{.Status}}'"
+alias dps='docker ps -a'
+alias dn='docker network ls'
+alias dsys='docker system df'
+
+# alias dps='docker ps'
+# alias dp1="docker ps -a --format 'table {{.ID}} - {{.Names}} - {{.Status}} - {{.Image}}'"
+# alias dp2="docker ps --format 'table {{.ID}} - {{.Names}} - {{.Status}} - {{.Image}}'"
+
+# dnames() {
+# 	for ID in $(docker ps | awk '{print $1}' | grep -v 'CONTAINER'); do
+# 		docker inspect $ID | grep Name | head -1 | awk '{print $2}' | sed 's/,//g' | sed 's%/%%g' | sed 's/"//g'
+# 	done
+# }
+
+# ----------------------------- Generic -------------------------- #
+alias ld='lazydocker'
+alias dfi='docker search' # docker search postgres
+alias dfio='docker search --filter is-official=true'
+alias dpl='docker pull'
+alias db="docker build -t"
+# docker build -t friendlyname .
+# docker build -t my_image:1.0 --build-arg MY_VAR=value --file /path/to/Dockerfile /path/to/context
+
+# ----------------------------- Remove -------------------------- #
+alias drm="docker rm"
+alias drmi='docker rmi'
+alias drmia='docker rmi $(docker images -q)'
+alias drmv="docker volume prune"
+alias drmsys='docker system prune -a'
+
+drma() {
+	docker rm $(docker ps -a -q)
+}
+
+# ----------------------------- Containers -------------------------- #
+alias ds='docker stop'
+alias dsa='docker stop $(docker ps -a -q)'
+alias dr='docker run -dit'  # docker run -dit -p 8080:80 --name my_container nginx:latest
+alias dex="docker exec -it" # docker exec -it abc123 bash
+
+# ----------------------------- Logs -------------------------- #
+alias dl='docker logs'
+alias dlf='docker logs -f'
+
+# ----------------------------- Compose -------------------------- #
+# https://dev.to/kovah/useful-docker-shell-aliases-to-speed-up-develipment-3ck5
+alias dc='docker-compose'
+alias dcp='docker-compose ps'
+alias dcl='docker-compose logs'
+alias dcf='docker-compose build --no-cache'
+alias dcd='docker-compose down'
+alias dcu='docker-compose up -d'
+alias dcs="docker-compose stop"
+alias dcr="docker-compose restart"
+# alias dcu=" docker-compose -f docker-compose.yml up -d"
+# alias dnc='docker-compose down && docker system prune -af --volumes'
+
+# ----------------------------- Ports & IPs -------------------------- #
+alias dpo='docker port' # docker port my_container
+
+# Get ip's for all docker compose containers
+dip() {
+	docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+}

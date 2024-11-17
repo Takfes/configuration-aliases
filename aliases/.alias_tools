@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# ========================================================================
+# ======================= TOOL BASED ALIASES =============================
+# ========================================================================
+
+alias nv='nvim'
+alias la='ls -lath'
+alias le='exa -la'
+alias lz='eza --color=always --long --git --icons=always --no-user --no-permissions'
+
+# ========================================================================
+# ======================= CREATE REPO STRUCTURE ==========================
+# ========================================================================
+
+# my own template https://github.com/Takfes/fun-cli-tool-mktmp
+mktmp() {
+    curl -sSL https://gist.githubusercontent.com/Takfes/f851ba72f994ec51c9bee09f1ba27417/raw/5d7965b9feb90b6bf8f63113704860e18c620a16/main.py | python - "$@"
+}
+
+# uv cookiecutter template
+# https://github.com/fpgmaas/cookiecutter-uv/tree/main
+
+uvc() {
+    uvx cookiecutter https://github.com/fpgmaas/cookiecutter-uv.git
+}
+
+# ========================================================================
+# ============================== DVC =====================================
+# ========================================================================
+
+alias d='dvc status'
+alias dl='dvc list . --dvc-only'
+alias drem='dvc remote list'
+
+# ========================================================================
+# ============================== TMUX ====================================
+# ========================================================================
+
+if command -v tmux >/dev/null 2>&1; then
+    alias t='tmux'
+    alias tn='tmux new -s'
+    alias td='tmux detach'
+    alias ta='tmux attach -t'
+else
+    echo "tmux is not installed"
+    # Handle the case where tmux is not installed
+fi
+
+eval "$(pyenv init -)"
+eval "$(zoxide init zsh)"
+
+# ========================================================================
+# ============================== SPARK ===================================
+# ========================================================================
+
+export SPARK_HOME=/opt/spark
+export PATH=$SPARK_HOME/bin:$PATH
+# export PYSPARK_DRIVER_PYTHON='jupyter notebook'
+# export PYSPARK_DRIVER_PYTHON_OPTS='notebook'
+
+# ========================================================================
+# ============================== YABAI ===================================
+# ========================================================================
+
+# yabai & skhd related
+# function to get the name of the application -> yabai
+getappname() {
+    osascript -e "id of app \"$1\""
+}
+
+alias ys='yabai --start-service && skhd --start-service'
+alias yq='yabai --stop-service && skhd --stop-service'

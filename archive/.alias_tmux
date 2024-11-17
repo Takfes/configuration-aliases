@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if command -v tmux >/dev/null 2>&1; then
+    alias t='tmux'
+    alias tn='tmux new -s'
+    alias td='tmux detach'
+    alias ta='tmux attach -t'
+else
+    echo "tmux is not installed"
+    # Handle the case where tmux is not installed
+fi

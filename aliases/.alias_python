@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# alias conda="~/miniforge3/bin/conda"
+alias pipu='python -m pip install --upgrade pip'
+
+# --------------------------------------------------------------
+# anaconda
+# --------------------------------------------------------------
+
+alias condaenv='conda create --name'
+alias condaenvl='conda env list'
+
+# --------------------------------------------------------------
+# uv
+# --------------------------------------------------------------
+
+# https://docs.astral.sh/uv/getting-started/installation/#cargo
+# brew install uv
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+
+alias uvi='uv init'
+alias uva='uv add'
+alias uvr='uv run'
+alias uvs='uv sync'
+alias uvp='uv run python --version'
+alias uvrm='uv remove'
+alias uvup='uv update'
+alias uvls='uv list'
+
+# --------------------------------------------------------------
+# pyenv
+# --------------------------------------------------------------
+
+alias pyv='pyenv versions'
+alias pyvl='pyenv install -l'
+alias pyc='pyenv commands'
+alias pyi='pyenv install'
+alias pyl='pyenv local'
+alias pyg='pyenv global'
+alias pyu='pyenv uninstall'
+alias pys='pyenv shell'
+
+# --------------------------------------------------------------
+# poetry
+# --------------------------------------------------------------
+
+alias poa='poetry add'
+alias pol='poetry config --list'
+alias poc='poetry config virtualenvs.in-project true'
+alias poi='poetry env info'
+
+# export PATH="/Users/takis/.local/bin:$PATH"
+# poetry init
+# poetry init -n
+# poetry new project_name

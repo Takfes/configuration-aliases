@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# --------------------------------------------------------------
+# source .alias files
+# --------------------------------------------------------------
+
+mytimer() {
+    start=$(date +%s)
+    $@
+    end=$(date +%s)
+    runtime=$((end - start))
+    echo "Command $@ took $runtime seconds"
+}
+
+# mytimer source ~/.alias_docker
+# mytimer source ~/.alias_dvc
+# mytimer source ~/.alias_fzf
+# mytimer source ~/.alias_git
+# mytimer source ~/.alias_kube
+# mytimer source ~/.alias_misc
+# mytimer source ~/.alias_python
+# mytimer source ~/.alias_tmux
+# mytimer source ~/.alias_shell
+
+for alias_file in $(dirname "$0")/.alias_*; do
+    mytimer source "$alias_file"
+done

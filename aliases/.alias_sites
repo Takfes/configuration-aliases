@@ -1,0 +1,39 @@
+#!/bin/bash
+
+OS=$(uname -s)
+
+if [ "$OS" = "Darwin" ]; then
+
+    # os specific aliases
+    alias src='source ~/.zshrc'
+    # go to places
+    alias dot='cd $CONFIG_PATH'
+    alias sck='cd /Users/takis/Documents/sckool'
+    # os and python specific configuration
+    alias pipa='~/miniforge3/bin/pip'
+    export PATH=$PATH:$HOME/.poetry/bin
+    export PYENV_ROOT="$HOME/.pyenv"
+    command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+
+elif [ "$OS" = "MSYS_NT-10.0-19042" ]; then
+
+    # os specific aliases
+    alias src='source ~/.bashrc'
+    # go to places
+    alias sck="cd '/c/Users/FessasP/OneDrive - Titan Cement Company SA/Desktop/testin/cypress/CypressD'"
+    alias jj3="cd '/c/Users/FessasP/OneDrive - Titan Cement Company SA/Desktop/testin/cypress/CypressDRecommender'"
+    alias jj4="cd '/c/Users/FessasP/OneDrive - Titan Cement Company SA/Desktop/testin/cypress/CypressDForecaster'"
+    alias jj5="cd '/c/Users/FessasP/OneDrive - Titan Cement Company SA/Desktop/testin/cypress/CypressDScheduler'"
+    alias jj6="cd '/c/Users/FessasP/OneDrive - Titan Cement Company SA/Desktop/testin/cypress/CypressDDispatcher'"
+    # os and python specific configuration
+    export PATH=$PATH:"/c/Users/FessasP/Anaconda3"
+    export PATH=$PATH:"/c/Users/FessasP/Anaconda3/bin"
+    export PATH=$PATH:"/c/Users/FessasP/Anaconda3/Scripts"
+    export PATH=$PATH:"/c/Users/FessasP/Anaconda3/Library/bin"
+
+elif [ "$OS" = "Linux" ]; then
+    echo "This is Linux"
+
+else
+    echo "OS not recognized"
+fi
