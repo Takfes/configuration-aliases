@@ -17,6 +17,17 @@ mkcd() {
     cd "$1"
 }
 
+# Function to invoke the Cursor app
+function cursor {
+    if [[ $# -eq 0 ]]; then
+        open -a "Cursor"
+    else
+        local argPath="$1"
+        [[ $1 = /* ]] && argPath="$1" || argPath="$PWD/${1#./}"
+        open -a "Cursor" "$argPath"
+    fi
+}
+
 # Function to display the provided message
 show() {
     if [ "$1" = "--help" ]; then

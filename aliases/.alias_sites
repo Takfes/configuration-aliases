@@ -7,7 +7,7 @@ if [ "$OS" = "Darwin" ]; then
     # os specific aliases
     alias src='source ~/.zshrc'
     # go to places
-    alias dot='cd $CONFIG_PATH'
+    alias dot='$CONFIG_PATH'
     alias sck='cd /Users/takis/Documents/sckool'
     # os and python specific configuration
     alias pipa='~/miniforge3/bin/pip'
