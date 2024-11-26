@@ -101,7 +101,7 @@ extract() {
 }
 
 # Function to create a generic .gitignore file
-gitig() {
+mkgit() {
     cat <<EOL >.gitignore
 # Compiled source #
 ###################

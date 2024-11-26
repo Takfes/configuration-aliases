@@ -2,6 +2,7 @@
 
 # alias conda="~/miniforge3/bin/conda"
 alias pipu='python -m pip install --upgrade pip'
+alias act='source .venv/bin/activate'
 
 # --------------------------------------------------------------
 # anaconda
@@ -20,12 +21,16 @@ alias condaenvl='conda env list'
 
 alias uvi='uv init'
 alias uva='uv add'
+alias uvad='uv add --dev'
 alias uvr='uv run'
 alias uvs='uv sync'
 alias uvp='uv run python --version'
+alias uve='uv pip install -e .'
+alias uvl='uv pip list'
 alias uvrm='uv remove'
 alias uvup='uv update'
-alias uvls='uv list'
+alias uvxf='uvx ruff format .'
+alias uvxc='uvx ruff check .'
 
 # --------------------------------------------------------------
 # pyenv
