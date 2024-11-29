@@ -9,6 +9,7 @@ if [ "$OS" = "Darwin" ]; then
     # go to places
     alias dot='$CONFIG_PATH'
     alias sck='cd /Users/takis/Documents/sckool'
+    alias cdc='cd ~/Library/Application\ Support/Claude/'
     # os and python specific configuration
     alias pipa='~/miniforge3/bin/pip'
     export PATH=$PATH:$HOME/.poetry/bin

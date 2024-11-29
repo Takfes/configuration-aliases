@@ -2,7 +2,7 @@
 
 # alias conda="~/miniforge3/bin/conda"
 alias pipu='python -m pip install --upgrade pip'
-alias act='source .venv/bin/activate'
+alias pact='source .venv/bin/activate'
 
 # --------------------------------------------------------------
 # anaconda
