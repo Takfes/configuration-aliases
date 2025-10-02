@@ -9,8 +9,11 @@ mytimer() {
     $@
     end=$(date +%s)
     runtime=$((end - start))
-    echo "Command $@ took $runtime seconds"
+    echo "‣ Command $@ took $runtime seconds"
 }
+
+echo "======================================================="
+echo "📌 You've reached the router $0"
 
 # mytimer source ~/.alias_docker
 # mytimer source ~/.alias_dvc
@@ -25,3 +28,6 @@ mytimer() {
 for alias_file in $(dirname "$0")/.alias_*; do
     mytimer source "$alias_file"
 done
+
+echo "======================================================="
+echo "✅ Finished loading all alias files"

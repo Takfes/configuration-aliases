@@ -19,10 +19,17 @@ mktmp() {
 }
 
 # uv cookiecutter template
-# https://github.com/fpgmaas/cookiecutter-uv/tree/main
+# https://github.com/fpgmaas/cookiecutter-uv
 
 uvc() {
     uvx cookiecutter https://github.com/fpgmaas/cookiecutter-uv.git
+}
+
+# uv takvbz template
+# https://github.com/Takfes/takvbz
+
+uvt() {
+    uvx cookiecutter https://github.com/Takfes/takvbz.git
 }
 
 # ========================================================================
