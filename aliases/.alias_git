@@ -6,21 +6,25 @@ command -v git >/dev/null 2>&1 || {
   return
 }
 
-# ----------------------------- Generic -------------------------- #
-
-alias lg='lazygit'
+# ==============================================================
+# > basic git operations
+# ==============================================================
 
 alias gs="git status"
 alias gca="git commit --amend"
 alias gmc="git diff --name-only --diff-filter=U"
 
-# ----------------------------- Intereacting w/ Remotes --------- #
+# ==============================================================
+# > remote operations
+# ==============================================================
 
 alias gps="git push"
 alias gpl="git pull"
 alias gfa="git fetch --all"
 
-# ----------------------------- Branch -------------------------- #
+# ==============================================================
+# > branch operations
+# ==============================================================
 
 # Move Branches
 alias gsw="git switch"
@@ -42,15 +46,9 @@ alias gbd='git branch -d'             # delete the current branch
 alias gbD='git branch -D'             # delete the current branch even though not merged
 alias gbdr='git push origin --delete' # delete remote branch
 
-# Create local branch from remote branch
-function gbt() {
-  git checkout -b $1 origin/$1
-  # git checkout -b <branch> origin/<branch> # create a local branch from a remote branch
-  # git checkout -t origin/branch
-  # git switch -c <branch> origin/<branch>
-}
-
-# ----------------------------- Stash --------------------------- #
+# ==============================================================
+# > stash operations
+# ==============================================================
 
 alias gt="git stash"
 alias gtl="git stash list"
@@ -59,14 +57,18 @@ alias gta="git stash apply" # git stash apply stash@{2}
 alias gtp="git stash pop"   # git stash pop stash@{2}
 alias gtd="git stash drop"  # git stash drop stash@{2}
 
-# ----------------------------- Log ----------------------------- #
+# ==============================================================
+# > log operations
+# ==============================================================
 
 alias gla="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- | nl -v 0"
 alias glb="git log --oneline --decorate --graph"
 alias glc="git log --decorate --graph --oneline --all"
 alias gld="git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short --decorate --graph"
 
-# ----------------------------- Config ---------------------------- #
+# ==============================================================
+# > git configuration
+# ==============================================================
 
 alias guu='git config --global user.name && git config --global user.email'
 alias guc='git config --get credential.helper'
@@ -74,58 +76,40 @@ alias gul='git config -l'
 # alias gconfn='git config --global user.name'
 # alias gconfe='git config --global user.email'
 
-# function to toggle between users
-function gut() {
-  echo "Current user: $(git config --global user.name), $(git config --global user.email)"
-  echo "Select a git user configuration:"
-  echo "1. takis/titan"
-  echo "2. takis/personal"
-  read -p "Enter a number (1-2): " user_choice
-  case $user_choice in
-  1)
-    git config --global user.name "pfessas"
-    git config --global user.email "p.fessas@titancement.com"
-    echo "Switched to takis/titan configuration"
-    ;;
-  2)
-    git config --global user.name "Takfes"
-    git config --global user.email "takis_a29@hotmail.com"
-    echo "Switched to takis/personal configuration"
-    ;;
-  *)
-    echo "Invalid choice. Please enter a number between 1 and 2."
-    ;;
-  esac
+# ==============================================================
+# > git diff operations
+# ==============================================================
+
+alias gdf="git diff"                             # shows unstaged changes
+alias gds="git diff --staged"                    # shows staged changes same as "git diff --cached"
+alias gdh="git diff HEAD"                        # shows everything that has changed since HEAD
+alias gdm="git diff --name-only --diff-filter=U" # highlight files with merge conflicts
+
+# alias gd="git diff --stat --diff-filter=M"
+# after the diff |-> use file to narrow the results down to file(s)
+# after the diff |-> use : branch1..branch2 to compare branches | or commit hashes commitHash1..commitHash2
+
+# ==============================================================
+# > other git operations
+# ==============================================================
+
+alias grmc="git rm -r --cached"                    # Untrack Files without deleting them
+alias gfp="git fetch --all --prune"                # fetches all branches from all remotes & removes any remote-tracking branches which no longer exist on the remote
+alias gx="ign = ls-files -o -i --exclude-standard" # show ignored files by git
+
+# ==============================================================
+# > git functions
+# ==============================================================
+
+# Create local branch from remote branch
+function gbt() {
+  git checkout -b $1 origin/$1
+  # git checkout -b <branch> origin/<branch> # create a local branch from a remote branch
+  # git checkout -t origin/branch
+  # git switch -c <branch> origin/<branch>
 }
 
-# ----------------------------- Functions ---------------------------- #
-
-# --------------------------------------------------------------
-# aux function to color output
-# --------------------------------------------------------------
-
-function cds() {
-  path="$1"
-  IFS='/' read -ra parts <<<"$path"
-  # 31-Red # 32-Green # 33-Yellow # 34-Blue # 35-Magenta # 36-Cyan # 37-White
-  colors=(31 32 33 34 35 36 37)
-  result=""
-  for i in "${!parts[@]}"; do
-    part="${parts[$i]}"
-    color_index=$((i % ${#colors[@]}))
-    color_code="${colors[$color_index]}"
-    result+="\033[0;${color_code}m${part}\033[0m"
-    if ((i < ${#parts[@]} - 1)); then
-      result+="/"
-    fi
-  done
-  echo -e "$result"
-}
-
-# --------------------------------------------------------------
-# function to list all available branches and checkout to the selected one
-# --------------------------------------------------------------
-
+# Interactive branch switcher: lists all local branches except current, lets user select one to switch to
 function bm() {
   # get current branch
   current_branch=$(git branch --show-current)
@@ -152,10 +136,7 @@ function bm() {
   git switch $selected_branch
 }
 
-# --------------------------------------------------------------
 # function to list all available branches and delete the selected one
-# --------------------------------------------------------------
-
 function bmd() {
   # get current branch
   current_branch=$(git branch --show-current)
@@ -183,10 +164,7 @@ function bmd() {
   git branch -d $selected_branch
 }
 
-# --------------------------------------------------------------
 # list remote branches and checkout to local branch
-# --------------------------------------------------------------
-
 function grems() {
   # read all remote branches, remove the "origin/"  part from their name and sort them in alphabetical order
   # remote_branch_names=$(git branch -r | awk '{print $1}' | cut -c 8- | grep -v HEAD | sort)
@@ -215,11 +193,56 @@ function grems() {
   git branch --track $selected_branch origin/$selected_branch
 }
 
-# ============================================================================
-# ============================== ARCHIVE =====================================
-# ============================================================================
+# ==============================================================
+# > helper functions
+# ==============================================================
 
-# ----------------------------- TimeTravel ---------------------- #
+# Prints a given path with each directory colored differently for enhanced readability in the terminal.
+function cds() {
+  path="$1"
+  IFS='/' read -ra parts <<<"$path"
+  # 31-Red # 32-Green # 33-Yellow # 34-Blue # 35-Magenta # 36-Cyan # 37-White
+  colors=(31 32 33 34 35 36 37)
+  result=""
+  for i in "${!parts[@]}"; do
+    part="${parts[$i]}"
+    color_index=$((i % ${#colors[@]}))
+    color_code="${colors[$color_index]}"
+    result+="\033[0;${color_code}m${part}\033[0m"
+    if ((i < ${#parts[@]} - 1)); then
+      result+="/"
+    fi
+  done
+  echo -e "$result"
+}
+
+# function to toggle between users
+function gut() {
+  echo "Current user: $(git config --global user.name), $(git config --global user.email)"
+  echo "Select a git user configuration:"
+  echo "1. takis/titan"
+  echo "2. takis/personal"
+  read -p "Enter a number (1-2): " user_choice
+  case $user_choice in
+  1)
+    git config --global user.name "pfessas"
+    git config --global user.email "p.fessas@titancement.com"
+    echo "Switched to takis/titan configuration"
+    ;;
+  2)
+    git config --global user.name "Takfes"
+    git config --global user.email "takis_a29@hotmail.com"
+    echo "Switched to takis/personal configuration"
+    ;;
+  *)
+    echo "Invalid choice. Please enter a number between 1 and 2."
+    ;;
+  esac
+}
+
+# ==============================================================
+# > git time travel / undo operations
+# ==============================================================
 
 # alias gcu="git checkout --"      # discard changes -on selected files- back to HEAD | "git checkout -- <file1> <file2>" | same as "git checkout HEAD <filename(s)>" & "git restore <filename(s)>"
 # alias gcr="git restore --source" # discard changes -on selected files- up to reference point | "git restore --source <HEADreference [HEAD~3] or commitHash> <filename"
@@ -255,19 +278,4 @@ function grems() {
 # REVERT : git revert --continue        # Continue the revert process after resolving conflicts
 # REVERT : git revert --abort           # Cancel the revert process and return to the pre-revert state
 
-# ----------------------------- Diff ---------------------------- #
-
-# alias gdf="git diff"                             # shows unstaged changes
-# alias gds="git diff --staged"                    # shows staged changes same as "git diff --cached"
-# alias gdh="git diff HEAD"                        # shows everything that has changed since HEAD
-# alias gdm="git diff --name-only --diff-filter=U" # highlight files with merge conflicts
-
-# alias gd="git diff --stat --diff-filter=M"
-# after the diff |-> use file to narrow the results down to file(s)
-# after the diff |-> use : branch1..branch2 to compare branches | or commit hashes commitHash1..commitHash2
-
-# ----------------------------- Misc ---------------------------- #
-
-# alias grmc="git rm -r --cached"                    # Untrack Files without deleting them
-# alias gfp="git fetch --all --prune"                # fetches all branches from all remotes & removes any remote-tracking branches which no longer exist on the remote
-# alias gx="ign = ls-files -o -i --exclude-standard" # show ignored files by git
+# ==============================================================

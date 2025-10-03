@@ -8,8 +8,6 @@ command -v docker >/dev/null 2>&1 || {
 
 # ----------------------------- Generic -------------------------- #
 
-alias ld='lazydocker'
-
 alias dfi='docker search'
 alias dfio='docker search --filter is-official=true'
 alias dpl='docker pull'
