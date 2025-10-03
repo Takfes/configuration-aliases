@@ -56,3 +56,7 @@ pip-delete-this-directory.txt
 ################
 .env
 .env.*
+
+# Custom #
+################
+aliases/.alias_oss
