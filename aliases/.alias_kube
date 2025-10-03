@@ -6,37 +6,44 @@ command -v kubectl >/dev/null 2>&1 || {
   return
 }
 
-# ----------------------------- Generic --------------------------
+# ==============================================================
+# > generic kubectl
+# ==============================================================
 
-alias k='kubectl'
+alias k='kubectl'                # Shortcut for kubectl command
+alias kg='kubectl get'           # Get resources (pods, services, etc.)
+alias kga='kubectl get --all-namespaces all'  # Get all resources in all namespaces
+alias kd='kubectl describe'      # Describe resources in detail
+alias kaf='kubectl apply -f'     # Apply configuration from a file
+alias kex='kubectl exec -it'     # Execute a command in a pod interactively
+alias kar='kubectl api-resources' # List all available API resources
+alias ke='kubectl explain'       # Get documentation for a resource
 
-alias kg='kubectl get'
-alias kga='kubectl get --all-namespaces all'
-alias kd='kubectl describe'
-alias kaf='kubectl apply -f'
-alias kex='kubectl exec -it'
-alias kar='kubectl api-resources'
-alias ke='kubectl explain'
+# ==============================================================
+# > kubectl context
+# ==============================================================
 
-# ----------------------------- Context --------------------------
-
-alias kcl='kubectl config get-contexts'
-alias kcc='kubectl config current-context'
+alias kcl='kubectl config get-contexts'      # List all available Kubernetes contexts
+alias kcc='kubectl config current-context'   # Show the current active Kubernetes context
 # alias kcu='kubectl config use-context'
 # alias kcs='kubectl config set-context'
 # alias kcd='kubectl config delete-context'
 
-# ----------------------------- Logs --------------------------
+# ==============================================================
+# > kubectl logs
+# ==============================================================
 
-alias kl='kubectl logs'
-alias klf='kubectl logs --follow'
+alias kl='kubectl logs'           # Show logs for a pod
+alias klf='kubectl logs --follow' # Stream logs for a pod in real-time (follow mode)
 
 # https://github.com/Takfes/kubernetes-training/blob/main/docs/CheatSheet.md
-
 # https://blog.devgenius.io/daily-useful-kubernetes-aliases-c35f7f411f39
 
-# ----------------------------- Logs --------------------------
+# ==============================================================
+# > custom functions
+# ==============================================================
 
+# Function to switch between Kubernetes contexts interactively
 kcx() {
   # Get a list of available Kubernetes contexts
   contexts=($(kubectl config get-contexts -o name))
@@ -71,6 +78,7 @@ kcx() {
   done
 }
 
+# Function to switch between Kubernetes namespaces interactively
 kns() {
   # Get the current context
   current_context=$(kubectl config current-context)

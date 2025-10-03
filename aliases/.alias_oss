@@ -3,21 +3,17 @@
 OS=$(uname -s)
 
 if [ "$OS" = "Darwin" ]; then
-
     # os specific aliases
     alias src='source ~/.zshrc'
     # go to places
-    alias dot='$CONFIG_PATH'
     alias sck='cd /Users/takis/Documents/sckool'
     alias cdc='cd ~/Library/Application\ Support/Claude/'
     # os and python specific configuration
     alias pipa='~/miniforge3/bin/pip'
-    export PATH=$PATH:$HOME/.poetry/bin
     export PYENV_ROOT="$HOME/.pyenv"
     command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 
 elif [ "$OS" = "MSYS_NT-10.0-19042" ]; then
-
     # os specific aliases
     alias src='source ~/.bashrc'
     # go to places

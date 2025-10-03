@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# Check if docker is installed
+command -v docker >/dev/null 2>&1 || {
+	echo >&2 "docker is not installed. Skipping docker configuration."
+	return
+}
+
+# ==============================================================
+# > generic docker
+# ==============================================================
+
+alias dfi='docker search'                # Search Docker Hub for images
+alias dfio='docker search --filter is-official=true'  # Search only official images on Docker Hub
+alias dpl='docker pull'                  # Pull an image from Docker Hub
+alias db='docker build -t'               # Build a Docker image and tag it
+
+# docker build -t friendlyname .
+# docker build -t my_image:1.0 --build-arg MY_VAR=value --file /path/to/Dockerfile /path/to/context
+
+# ==============================================================
+# > review objects
+# ==============================================================
+
+alias di='docker image ls'      # List all Docker images
+alias dv='docker volume ls'     # List all Docker volumes
+alias dp="docker ps -a --format 'table {{.Names}}\t{{.ID}}\t{{.Image}}\t{{.Status}}'"  # List all containers with names, IDs, images, and status in a table
+alias dps='docker ps -a'        # List all containers (default format)
+alias dn='docker network ls'    # List all Docker networks
+alias dsys='docker system df'   # Show Docker disk usage
+alias dpo='docker port'         # Display port mappings for a container (usage: docker port <container>)
+
+# ==============================================================
+# > remove objects
+# ==============================================================
+
+alias drm="docker rm"                # Remove one or more containers
+alias drmi='docker rmi'              # Remove one or more images
+alias drmia='docker rmi $(docker images -q)'   # Remove all images
+alias drmv="docker volume prune"     # Remove all unused volumes
+alias drmsys='docker system prune -a' # Remove all unused data (containers, images, volumes, networks)
+
+# ==============================================================
+# > start/stop/exec containers
+# ==============================================================
+
+alias ds='docker stop'                          # Stop one or more running containers (usage: docker stop <container>)
+alias dsa='docker stop $(docker ps -a -q)'      # Stop all running containers
+alias dr='docker run -dit'                      # Run a container in detached mode with interactive terminal (usage: docker run -dit <options> <image>)
+alias dex="docker exec -it"                     # Execute a command in a running container with interactive terminal (usage: docker exec -it <container> <command>)
+
+# ==============================================================
+# > docker logs
+# ==============================================================
+
+alias dl='docker logs'        # Show logs for a container (usage: docker logs <container>)
+alias dlf='docker logs -f'    # Follow logs output for a container (usage: docker logs -f <container>)
+
+# ==============================================================
+# > docker-compose
+# ==============================================================
+
+# https://dev.to/kovah/useful-docker-shell-aliases-to-speed-up-develipment-3ck5
+
+alias dc='docker-compose'                # Shortcut for docker-compose command
+alias dcp='docker-compose ps'            # List containers managed by docker-compose
+alias dcl='docker-compose logs'          # Show logs for all docker-compose services
+alias dcf='docker-compose build --no-cache' # Build images without using cache
+alias dcd='docker-compose down'          # Stop and remove containers, networks, images, and volumes created by up
+alias dcu='docker-compose up -d'         # Start services in detached mode
+alias dcs="docker-compose stop"          # Stop running services
+alias dcr="docker-compose restart"       # Restart services
+
+# alias dcu=" docker-compose -f docker-compose.yml up -d"
+# alias dnc='docker-compose down && docker system prune -af --volumes'
+
+# ==============================================================
+# > custom functions
+# ==============================================================
+
+# Remove all stopped containers
+drma() {
+	docker rm $(docker ps -a -q)
+}
+
+# List all container names and their IP addresses
+dip() {
+	docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+}
+
+# ==============================================================
+# > archive commands
+# ==============================================================
+
+# alias dp1="docker ps -a --format 'table {{.ID}} - {{.Names}} - {{.Status}} - {{.Image}}'"
+# alias dp2="docker ps --format 'table {{.ID}} - {{.Names}} - {{.Status}} - {{.Image}}'"
+
+# dnames() {
+# 	for ID in $(docker ps | awk '{print $1}' | grep -v 'CONTAINER'); do
+# 		docker inspect $ID | grep Name | head -1 | awk '{print $2}' | sed 's/,//g' | sed 's%/%%g' | sed 's/"//g'
+# 	done
+# }

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# ==============================================================
+# > misc python
+# ==============================================================
+
+# https://docs.astral.sh/uv/getting-started/installation/#cargo
+# brew install uv
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+
+alias cce='conda create --name'                # Create a new conda environment
+alias pipu='python -m pip install --upgrade pip' # Upgrade pip in the current environment
+alias pact='source .venv/bin/activate'         # Activate local Python virtual environment
+
+# ==============================================================
+# > python / uv
+# ==============================================================
+
+alias uvi='uv init'                            # Initialize a new uv project
+alias uvs='uv sync'                            # Sync dependencies as per pyproject.toml
+alias uva='uv add'                             # Add a new dependency
+alias uvad='uv add --dev'                      # Add a new dev dependency
+alias uvrm='uv remove'                         # Remove a dependency
+alias uvup='uv update'                         # Update dependencies
+alias uvl='uv pip list'                        # List installed packages using uv's pip
+alias uvxf='uvx ruff format .'                 # Format code using ruff via uvx
+alias uvxc='uvx ruff check .'                  # Check code style using ruff via uvx
+alias uvr='uv run'                             # Run a command in the uv environment
+alias uvp='uv run python --version'            # Show Python version in uv environment
+alias uve='uv pip install -e .'                # Install current project in editable mode using uv's pip
+
+
+# ==============================================================
+# > show custom function
+# ==============================================================
+show() {
+    export ALIASES_DIR="$ALIASES_DIR"
+    export CONFIG_PATH="$CONFIG_PATH"
+    python3 "$CONFIG_PATH/scripts/show.py" "$@"
+}
+
+# ==============================================================
+# > uv/uvx cookiecutter
+# ==============================================================
+
+# uv cookiecutter template https://github.com/fpgmaas/cookiecutter-uv
+uvc() {
+    uvx cookiecutter https://github.com/fpgmaas/cookiecutter-uv.git
+}
+
+# uv takvbz template https://github.com/Takfes/takvbz
+uvt() {
+    uvx cookiecutter https://github.com/Takfes/takvbz.git
+}
+
+# ==============================================================
+# > dvc
+# ==============================================================
+
+alias d='dvc status'
+alias dl='dvc list . --dvc-only'
+alias drem='dvc remote list'
