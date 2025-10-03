@@ -1,7 +1,11 @@
+<p align="center">
+    <img src="static/logo.svg" alt="Project Logo" width="480"/>
+</p>
+
 # ALIAS MANAGEMENT
 
 ## WHAT IS THIS?
-A centralized, portable alias management system for consistent shell environments across different systems.
+A centralized, portable alias management system for consistent shell environments across different systems. See [repo_toc](docs/repo_toc.md) for a detailed repository walkthrough.
 
 ## WHY DOES IT MATTER?
 - **Consistency**: Maintain the same set of aliases across multiple systems (e.g., work
