@@ -39,3 +39,18 @@ echo "🚀 Forwarding to the Hub at $CONFIG_FILE"
 source "$CONFIG_FILE"
 echo "======================================================="
 ```
+
+### Flow Diagram
+```plaintext
+Shell Startup
+   ↓
+.zshrc / .bashrc
+   ↓
+Bridge Block
+   ↓
+source_manager.sh
+   ↓
+Loop: source each alias file in ALIASES_DIR
+   ↓
+Aliases/functions loaded in shell
+```
