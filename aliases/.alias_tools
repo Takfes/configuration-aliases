@@ -11,6 +11,13 @@ alias lz='eza --color=always --long --git --icons=always --no-user --no-permissi
 alias ld='lazydocker'
 alias lg='lazygit'
 
+# Wrapper function to call the Python show script
+show() {
+    export ALIASES_DIR="$ALIASES_DIR"
+    export CONFIG_PATH="$CONFIG_PATH"
+    python3 "$CONFIG_PATH/scripts/show.py" "$@"
+}
+
 # ========================================================================
 # ======================= CREATE REPO STRUCTURE ==========================
 # ========================================================================

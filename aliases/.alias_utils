@@ -18,7 +18,7 @@ mkcd() {
 }
 
 # Function to display the provided message
-show() {
+showb() {
     if [ "$1" = "--help" ]; then
         local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
         local valid_files=()
