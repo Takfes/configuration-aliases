@@ -7,7 +7,7 @@
 alias qwe='src && clear'
 alias hist='history'
 alias hub='$CONFIG_PATH'
-alias sl='ls -a "$ALIASES_DIR" | grep .alias_'
+alias showl='ls -a "$ALIASES_DIR" | grep .alias_'
 
 # ==============================================================
 # > custom functions

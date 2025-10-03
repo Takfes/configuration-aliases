@@ -11,6 +11,43 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 
+class Colors:
+    """ANSI color codes for terminal output"""
+
+    # Basic colors
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    MAGENTA = "\033[95m"
+    CYAN = "\033[96m"
+    WHITE = "\033[97m"
+    GRAY = "\033[90m"
+
+    # Bright colors
+    BRIGHT_RED = "\033[91m"
+    BRIGHT_GREEN = "\033[92m"
+    BRIGHT_YELLOW = "\033[93m"
+    BRIGHT_BLUE = "\033[94m"
+    BRIGHT_MAGENTA = "\033[95m"
+    BRIGHT_CYAN = "\033[96m"
+
+    # Styles
+    BOLD = "\033[1m"
+    DIM = "\033[2m"
+    UNDERLINE = "\033[4m"
+    ITALIC = "\033[3m"
+
+    # Reset
+    RESET = "\033[0m"
+
+    @staticmethod
+    def strip_ansi(text: str) -> str:
+        """Remove ANSI codes from text for length calculations"""
+        ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+        return ansi_escape.sub("", text)
+
+
 class AliasParser:
     def __init__(self, alias_file: str):
         self.alias_file = alias_file
@@ -25,7 +62,9 @@ class AliasParser:
             with open(self.alias_file, "r") as f:
                 lines = f.readlines()
         except FileNotFoundError:
-            print(f"❌ Alias file not found: {self.alias_file}")
+            print(
+                f"{Colors.BRIGHT_RED}❌ Alias file not found:{Colors.RESET} {Colors.DIM}{self.alias_file}{Colors.RESET}"
+            )
             return False
 
         current_section = None
@@ -146,8 +185,15 @@ class AliasDisplay:
 
     def display_cards(self, category: str) -> None:
         """Display aliases in grouped cards format (default)"""
-        print(f"\n📁 Source: {self.parser.alias_file}")
-        print(f"🎯 {category.upper().replace('_', ' ')} ALIASES\n")
+        # Header with colors and box styling
+        print(f"\n{Colors.CYAN}╭{'─' * 60}╮{Colors.RESET}")
+        print(
+            f"{Colors.CYAN}│{Colors.RESET} {Colors.BRIGHT_CYAN}📁 Source:{Colors.RESET} {Colors.DIM}{self.parser.alias_file}{Colors.RESET}{' ' * (60 - len(self.parser.alias_file) - 10)}{Colors.CYAN}│{Colors.RESET}"
+        )
+        print(
+            f"{Colors.CYAN}│{Colors.RESET} {Colors.BRIGHT_YELLOW}🎯 {category.upper().replace('_', ' ')} ALIASES{Colors.RESET}{' ' * (60 - len(category.upper().replace('_', ' ')) - 12)}{Colors.CYAN}│{Colors.RESET}"
+        )
+        print(f"{Colors.CYAN}╰{'─' * 60}╯{Colors.RESET}\n")
 
         total_aliases = 0
         total_functions = 0
@@ -157,27 +203,64 @@ class AliasDisplay:
             if not items:
                 continue
 
-            print(f"📦 {section_name.upper().replace('_', ' ')}")
+            # Section header with enhanced styling
+            section_title = section_name.upper().replace("_", " ")
+            print(f"{Colors.BRIGHT_BLUE}📦 {section_title}{Colors.RESET}")
+            print(f"{Colors.BLUE}{'═' * (len(section_title) + 3)}{Colors.RESET}")
 
             for name, command, description in items:
                 if command == "(function)":
-                    desc_text = f" - {description}" if description else ""
-                    print(f"   {name:<8} → {command}{desc_text}")
+                    # Function styling with icon
+                    desc_text = (
+                        f"{Colors.DIM} - {description}{Colors.RESET}"
+                        if description
+                        else ""
+                    )
+                    print(
+                        f"   {Colors.BRIGHT_MAGENTA}⚡ {name:<11}{Colors.RESET} {Colors.YELLOW}▶{Colors.RESET} {Colors.CYAN}{command}{Colors.RESET}{desc_text}"
+                    )
                     total_functions += 1
                 else:
-                    desc_text = f" # {description}" if description else ""
-                    print(f"   {name:<8} → {command}{desc_text}")
+                    # Alias styling with icon
+                    desc_text = (
+                        f"{Colors.DIM} # {description}{Colors.RESET}"
+                        if description
+                        else ""
+                    )
+                    # Truncate long commands for readability
+                    display_cmd = (
+                        command if len(command) <= 50 else command[:47] + "..."
+                    )
+                    print(
+                        f"   {Colors.BRIGHT_GREEN}🔧 {name:<11}{Colors.RESET} {Colors.YELLOW}▶{Colors.RESET} {Colors.WHITE}{display_cmd}{Colors.RESET}{desc_text}"
+                    )
                     total_aliases += 1
 
             print()
 
-        print(f"📊 Total: {total_aliases} aliases, {total_functions} functions\n")
+        # Summary with enhanced styling
+        print(f"{Colors.CYAN}╭{'─' * 40}╮{Colors.RESET}")
+        print(
+            f"{Colors.CYAN}│{Colors.RESET} {Colors.BRIGHT_CYAN}📊 Summary:{Colors.RESET} {Colors.BRIGHT_GREEN}{total_aliases} aliases{Colors.RESET}, {Colors.BRIGHT_MAGENTA}{total_functions} functions{Colors.RESET}{' ' * (40 - len(str(total_aliases)) - len(str(total_functions)) - 23)}{Colors.CYAN}│{Colors.RESET}"
+        )
+        print(f"{Colors.CYAN}╰{'─' * 40}╯{Colors.RESET}\n")
 
     def display_table(self, category: str) -> None:
         """Display aliases in compact table format"""
-        print(f"\n📁 Source: {self.parser.alias_file}")
-        print(f"🎯 {category.upper().replace('_', ' ')} ALIASES")
-        print("┌─────────────────────┬─────────────────────────────────────────────┐")
+        # Header with colors
+        print(
+            f"\n{Colors.BRIGHT_CYAN}📁 Source:{Colors.RESET} {Colors.DIM}{self.parser.alias_file}{Colors.RESET}"
+        )
+        print(
+            f"{Colors.BRIGHT_YELLOW}🎯 {category.upper().replace('_', ' ')} ALIASES{Colors.RESET}"
+        )
+
+        # Table borders with colors
+        top_border = f"{Colors.CYAN}┌─────────────────────┬─────────────────────────────────────────────┐{Colors.RESET}"
+        mid_border = f"{Colors.CYAN}├─────────────────────┼─────────────────────────────────────────────┤{Colors.RESET}"
+        bottom_border = f"{Colors.CYAN}└─────────────────────┴─────────────────────────────────────────────┘{Colors.RESET}"
+
+        print(top_border)
 
         for section_name in self.parser.section_order:
             items = self.parser.sections.get(section_name, [])
@@ -189,30 +272,46 @@ class AliasDisplay:
             for name, command, description in items:
                 if not section_printed:
                     section_header = section_name.upper().replace("_", " ")
-                    print(f"│ {section_header:<19} │ {'':<43} │")
                     print(
-                        "├─────────────────────┼─────────────────────────────────────────────┤"
+                        f"{Colors.CYAN}│{Colors.RESET} {Colors.BRIGHT_BLUE}{section_header:<19}{Colors.RESET} {Colors.CYAN}│{Colors.RESET} {'':<43} {Colors.CYAN}│{Colors.RESET}"
                     )
+                    print(mid_border)
                     section_printed = True
 
-                # Truncate long commands
+                # Truncate long commands and apply colors
                 display_cmd = command
                 if len(display_cmd) > 43:
                     display_cmd = display_cmd[:40] + "..."
 
-                print(f"│ {name:<19} │ {display_cmd:<43} │")
+                # Color code based on type
+                if command == "(function)":
+                    name_color = f"{Colors.BRIGHT_MAGENTA}{name}{Colors.RESET}"
+                    cmd_color = f"{Colors.CYAN}{display_cmd}{Colors.RESET}"
+                else:
+                    name_color = f"{Colors.BRIGHT_GREEN}{name}{Colors.RESET}"
+                    cmd_color = f"{Colors.WHITE}{display_cmd}{Colors.RESET}"
 
-            if section_printed:
+                # Calculate padding accounting for color codes
+                name_padding = 19 - len(Colors.strip_ansi(name_color))
+                cmd_padding = 43 - len(Colors.strip_ansi(cmd_color))
+
                 print(
-                    "├─────────────────────┼─────────────────────────────────────────────┤"
+                    f"{Colors.CYAN}│{Colors.RESET} {name_color}{' ' * name_padding} {Colors.CYAN}│{Colors.RESET} {cmd_color}{' ' * cmd_padding} {Colors.CYAN}│{Colors.RESET}"
                 )
 
-        print("└─────────────────────┴─────────────────────────────────────────────┘\n")
+            if section_printed:
+                print(mid_border)
+
+        print(bottom_border)
 
     def display_interactive(self, category: str) -> None:
         """Display interactive section menu"""
-        print(f"\n📁 Source: {self.parser.alias_file}")
-        print(f"🎯 {category.upper().replace('_', ' ')} ALIASES - Select a section:\n")
+        print(
+            f"\n{Colors.BRIGHT_CYAN}📁 Source:{Colors.RESET} {Colors.DIM}{self.parser.alias_file}{Colors.RESET}"
+        )
+        print(
+            f"{Colors.BRIGHT_YELLOW}🎯 {category.upper().replace('_', ' ')} ALIASES{Colors.RESET} {Colors.GRAY}- Select a section:{Colors.RESET}\n"
+        )
 
         section_map = {}
         i = 1
@@ -225,18 +324,29 @@ class AliasDisplay:
             alias_count = sum(1 for _, cmd, _ in items if cmd != "(function)")
             func_count = sum(1 for _, cmd, _ in items if cmd == "(function)")
 
-            func_text = f", {func_count} functions" if func_count > 0 else ""
-            print(f"[{i:2d}] 📦 {section_name:<25} ({alias_count} aliases{func_text})")
+            func_text = (
+                f", {Colors.BRIGHT_MAGENTA}{func_count} functions{Colors.RESET}"
+                if func_count > 0
+                else ""
+            )
+
+            print(
+                f"{Colors.YELLOW}[{i:2d}]{Colors.RESET} {Colors.BRIGHT_BLUE}📦 {section_name:<25}{Colors.RESET} {Colors.GRAY}({Colors.BRIGHT_GREEN}{alias_count} aliases{Colors.RESET}{func_text}{Colors.GRAY}){Colors.RESET}"
+            )
 
             section_map[str(i)] = section_name
             i += 1
 
-        print("\n[0] Return to main menu\n")
+        print(
+            f"\n{Colors.YELLOW}[{Colors.BRIGHT_RED} 0{Colors.YELLOW}]{Colors.RESET} {Colors.DIM}Return to main menu{Colors.RESET}\n"
+        )
 
         try:
-            choice = input("Enter number or 'q' to quit: ").strip()
+            choice = input(
+                f"{Colors.BRIGHT_CYAN}Enter number or 'q' to quit:{Colors.RESET} "
+            ).strip()
         except (EOFError, KeyboardInterrupt):
-            print("\nExiting...")
+            print(f"\n{Colors.YELLOW}Exiting...{Colors.RESET}")
             return
 
         if choice.lower() == "q":
@@ -248,35 +358,60 @@ class AliasDisplay:
             selected_section = section_map[choice]
             self._display_selected_section(category, selected_section)
         else:
-            print("Invalid selection. Please try again.")
+            print(
+                f"{Colors.BRIGHT_RED}Invalid selection. Please try again.{Colors.RESET}"
+            )
             self.display_interactive(category)
 
     def _display_selected_section(self, category: str, section_name: str) -> None:
         """Display only the selected section in cards format"""
-        print(f"\n📁 Source: {self.parser.alias_file}")
+        # Header with box styling
+        section_title = section_name.upper().replace("_", " ")
+        header_width = max(60, len(section_title) + 20)
+
+        print(f"\n{Colors.CYAN}╭{'─' * header_width}╮{Colors.RESET}")
         print(
-            f"🎯 {category.upper().replace('_', ' ')} → {section_name.upper().replace('_', ' ')}\n"
+            f"{Colors.CYAN}│{Colors.RESET} {Colors.BRIGHT_CYAN}📁 Source:{Colors.RESET} {Colors.DIM}{self.parser.alias_file}{Colors.RESET}{' ' * (header_width - len(self.parser.alias_file) - 10)}{Colors.CYAN}│{Colors.RESET}"
         )
+        print(
+            f"{Colors.CYAN}│{Colors.RESET} {Colors.BRIGHT_YELLOW}🎯 {category.upper().replace('_', ' ')}{Colors.RESET} {Colors.GRAY}→{Colors.RESET} {Colors.BRIGHT_BLUE}{section_title}{Colors.RESET}{' ' * (header_width - len(category.upper().replace('_', ' ')) - len(section_title) - 14)}{Colors.CYAN}│{Colors.RESET}"
+        )
+        print(f"{Colors.CYAN}╰{'─' * header_width}╯{Colors.RESET}\n")
 
         items = self.parser.sections.get(section_name, [])
         for name, command, description in items:
             if command == "(function)":
-                desc_text = f" - {description}" if description else ""
-                print(f"   {name:<8} → {command}{desc_text}")
+                desc_text = (
+                    f"{Colors.DIM} - {description}{Colors.RESET}" if description else ""
+                )
+                print(
+                    f"   {Colors.BRIGHT_MAGENTA}⚡ {name:<11}{Colors.RESET} {Colors.YELLOW}▶{Colors.RESET} {Colors.CYAN}{command}{Colors.RESET}{desc_text}"
+                )
             else:
-                desc_text = f" # {description}" if description else ""
-                print(f"   {name:<8} → {command}{desc_text}")
+                desc_text = (
+                    f"{Colors.DIM} # {description}{Colors.RESET}" if description else ""
+                )
+                display_cmd = command if len(command) <= 50 else command[:47] + "..."
+                print(
+                    f"   {Colors.BRIGHT_GREEN}🔧 {name:<11}{Colors.RESET} {Colors.YELLOW}▶{Colors.RESET} {Colors.WHITE}{display_cmd}{Colors.RESET}{desc_text}"
+                )
 
         print()
 
     def _show_help(self) -> None:
         """Show help information"""
-        print("\n🎯 Enhanced Alias Display System")
-        print("────────────────────────────────────────")
-        print("\nUsage:")
-        print("  show <category>        Show grouped cards view (default)")
-        print("  show <category> -t     Show compact table view")
-        print("  show <category> -i     Show interactive section menu")
+        print(f"\n{Colors.BRIGHT_YELLOW}🎯 Enhanced Alias Display System{Colors.RESET}")
+        print(f"{Colors.CYAN}{'─' * 40}{Colors.RESET}")
+        print(f"\n{Colors.BRIGHT_CYAN}Usage:{Colors.RESET}")
+        print(
+            f"  {Colors.BRIGHT_GREEN}show <category>{Colors.RESET}        {Colors.GRAY}Show grouped cards view (default){Colors.RESET}"
+        )
+        print(
+            f"  {Colors.BRIGHT_GREEN}show <category> -t{Colors.RESET}     {Colors.GRAY}Show compact table view{Colors.RESET}"
+        )
+        print(
+            f"  {Colors.BRIGHT_GREEN}show <category> -i{Colors.RESET}     {Colors.GRAY}Show interactive section menu{Colors.RESET}"
+        )
         print()
 
 
@@ -291,18 +426,24 @@ def main():
             aliases_dir = os.path.join(config_path, "aliases")
         else:
             print(
-                "❌ Neither ALIASES_DIR nor CONFIG_PATH environment variables are set"
+                f"{Colors.BRIGHT_RED}❌ Neither ALIASES_DIR nor CONFIG_PATH environment variables are set{Colors.RESET}"
             )
             sys.exit(1)
 
     if len(sys.argv) < 2:
-        print("\n🎯 Enhanced Alias Display System")
-        print("────────────────────────────────────────")
-        print("\nUsage:")
-        print("  show <category>        Show grouped cards view (default)")
-        print("  show <category> -t     Show compact table view")
-        print("  show <category> -i     Show interactive section menu")
-        print("\nAvailable categories:")
+        print(f"\n{Colors.BRIGHT_YELLOW}🎯 Enhanced Alias Display System{Colors.RESET}")
+        print(f"{Colors.CYAN}{'─' * 40}{Colors.RESET}")
+        print(f"\n{Colors.BRIGHT_CYAN}Usage:{Colors.RESET}")
+        print(
+            f"  {Colors.BRIGHT_GREEN}show <category>{Colors.RESET}        {Colors.GRAY}Show grouped cards view (default){Colors.RESET}"
+        )
+        print(
+            f"  {Colors.BRIGHT_GREEN}show <category> -t{Colors.RESET}     {Colors.GRAY}Show compact table view{Colors.RESET}"
+        )
+        print(
+            f"  {Colors.BRIGHT_GREEN}show <category> -i{Colors.RESET}     {Colors.GRAY}Show interactive section menu{Colors.RESET}"
+        )
+        print(f"\n{Colors.BRIGHT_CYAN}Available categories:{Colors.RESET}")
 
         # List available categories
         alias_files = Path(aliases_dir).glob(".alias_*")
@@ -310,7 +451,13 @@ def main():
 
         if categories:
             for i, cat in enumerate(sorted(categories)):
-                print(f"  {cat}", end="")
+                color = [
+                    Colors.BRIGHT_GREEN,
+                    Colors.BRIGHT_BLUE,
+                    Colors.BRIGHT_MAGENTA,
+                    Colors.BRIGHT_CYAN,
+                ][i % 4]
+                print(f"  {color}{cat}{Colors.RESET}", end="")
                 if (i + 1) % 4 == 0:
                     print()
             if len(categories) % 4 != 0:
@@ -325,7 +472,9 @@ def main():
     alias_file = Path(aliases_dir) / f".alias_{category}"
 
     if not alias_file.exists():
-        print(f"❌ Alias file not found: {alias_file}")
+        print(
+            f"{Colors.BRIGHT_RED}❌ Alias file not found:{Colors.RESET} {Colors.DIM}{alias_file}{Colors.RESET}"
+        )
         sys.exit(1)
 
     # Parse and display
