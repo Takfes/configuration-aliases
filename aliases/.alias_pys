@@ -57,6 +57,7 @@ uvt() {
 # > dvc
 # ==============================================================
 
-alias d='dvc status'
-alias dl='dvc list . --dvc-only'
-alias drem='dvc remote list'
+# pip install dvc
+alias dvs='dvc status'              # Show the status of DVC-tracked files
+alias dvl='dvc list . --dvc-only'.  # List DVC-tracked files in the current directory
+alias dvr='dvc remote list'         # List configured DVC remotes

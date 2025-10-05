@@ -24,38 +24,108 @@ mktmp() {
     curl -sSL https://gist.githubusercontent.com/Takfes/f851ba72f994ec51c9bee09f1ba27417/raw/5d7965b9feb90b6bf8f63113704860e18c620a16/main.py | python - "$@"
 }
 
-# Function to display the provided message
-showb() {
-    if [ "$1" = "--help" ]; then
-        local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
-        local valid_files=()
-        for file in "${files[@]}"; do
-            valid_files+=("$(basename "$file" | sed 's/.alias_//')")
-        done
-        echo "Available files: ${valid_files[*]}"
-        return
+# Function to display system information
+info() {
+    local divider="\n📌╰┈➤ ══════════════════════════════════════════════════ ⟡ ˙🌱"
+    echo "$divider"
+
+    local title="System Info"
+    local cmd="uname -s"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    eval "$cmd"
+    echo "$divider"
+
+    local title="System Detail"
+    local cmd="uname -a"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    eval "$cmd"
+    echo "$divider"
+
+    local title="Current User"
+    local cmd="whoami"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    eval "$cmd"
+    echo "$divider"
+
+    local title="Hostname"
+    local cmd="hostname"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    eval "$cmd"
+    echo "$divider"
+
+    local title="LSB Release Info"
+    local cmd="lsb_release -a"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    if command -v lsb_release >/dev/null 2>&1; then
+        eval "$cmd"
+    else
+        echo "lsb_release not available"
+    fi
+    echo "$divider"
+
+    local title="Current Shell"
+    local cmd="echo \$SHELL"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    eval "$cmd"
+    echo "$divider"
+
+    local title="Available Shells"
+    local cmd="cat /etc/shells | grep /bin/"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    if [ -f /etc/shells ]; then
+        eval "$cmd"
+    else
+        echo "/etc/shells not found"
+    fi
+    echo "$divider"
+
+    local title="Environment Variables (SHELL, USER, HOME)"
+    local cmd="env | grep -E 'SHELL|USER|HOME'"
+    echo "Title: $title"
+    echo "Command: $cmd"
+    echo -n "Output: "
+    eval "$cmd"
+    echo 
+}
+
+# Function to list network interfaces and their IP addresses
+ninfo() {
+    echo "Network Interfaces and IP Addresses:"
+    # Show IPv4 addresses using ip or ifconfig
+    if command -v ip >/dev/null 2>&1; then
+        ip -o -4 addr show | awk '{print $2 ": " $4}'
+        ip -o -6 addr show | awk '{print $2 ": " $4}'
+    elif command -v ifconfig >/dev/null 2>&1; then
+        ifconfig | awk '/flags=/{iface=$1} /inet /{print iface ": " $2} /inet6 /{print iface ": " $2}'
+    else
+        echo "Neither 'ip' nor 'ifconfig' command found."
     fi
 
-    local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
-    local valid_files=()
-    for file in "${files[@]}"; do
-        valid_files+=("$(basename "$file" | sed 's/.alias_//')")
-    done
-
-    if [[ " ${valid_files[*]} " == *" $1 "* ]]; then
-        if [ "$2" = "--edit" ] || [ "$2" = "-e" ]; then
-            ${EDITOR:-code} "$ALIASES_DIR"/.alias_$1
-        else
-            if command -v bat >/dev/null; then
-                bat "$ALIASES_DIR"/.alias_$1
-            else
-                cat "$ALIASES_DIR"/.alias_$1
-            fi
-        fi
+    echo "External IP Address:"
+    # Show external IP using curl or wget
+    if command -v curl >/dev/null 2>&1; then
+        curl -s https://ifconfig.me
+    elif command -v wget >/dev/null 2>&1; then
+        wget -qO- https://ifconfig.me
     else
-        echo "Invalid argument. Please provide one of the following: ${valid_files[*]}."
+        echo "curl or wget not available to fetch external IP."
     fi
 }
+
 
 # Function to remove temporary files and directories to free up space.
 clean() {
@@ -104,6 +174,39 @@ extract() {
         esac
     else
         echo "'$1' is not a valid file"
+    fi
+}
+
+# Function to display the provided message
+showb() {
+    if [ "$1" = "--help" ]; then
+        local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
+        local valid_files=()
+        for file in "${files[@]}"; do
+            valid_files+=("$(basename "$file" | sed 's/.alias_//')")
+        done
+        echo "Available files: ${valid_files[*]}"
+        return
+    fi
+
+    local files=($(ls "$ALIASES_DIR"/.alias_* 2>/dev/null))
+    local valid_files=()
+    for file in "${files[@]}"; do
+        valid_files+=("$(basename "$file" | sed 's/.alias_//')")
+    done
+
+    if [[ " ${valid_files[*]} " == *" $1 "* ]]; then
+        if [ "$2" = "--edit" ] || [ "$2" = "-e" ]; then
+            ${EDITOR:-code} "$ALIASES_DIR"/.alias_$1
+        else
+            if command -v bat >/dev/null; then
+                bat "$ALIASES_DIR"/.alias_$1
+            else
+                cat "$ALIASES_DIR"/.alias_$1
+            fi
+        fi
+    else
+        echo "Invalid argument. Please provide one of the following: ${valid_files[*]}."
     fi
 }
 

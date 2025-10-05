@@ -10,39 +10,26 @@ command -v git >/dev/null 2>&1 || {
 # > git basics
 # ==============================================================
 
-alias gs="git status"
-alias gca="git commit --amend"
-alias gmc="git diff --name-only --diff-filter=U"
+alias gs="git status"                        # show the working tree status (staged, unstaged, untracked files)
+alias gca="git commit --amend"               # amend the previous commit (edit message or add changes)
+alias gps="git push"                         # push commits to remote repository
+alias gpl="git pull"                         # fetch and merge from remote repository
+alias gfa="git fetch --all"                  # fetch from all remote repositories
 
 # ==============================================================
-# > remote operations
+# > git branch
 # ==============================================================
 
-alias gps="git push"                           # push commits to remote repository
-alias gpl="git pull"                           # fetch and merge from remote repository
-alias gfa="git fetch --all"                    # fetch from all remote repositories
+alias gcb='git checkout -b'                  # create and switch to new branch
+alias gsw='git switch'                       # switch to existing branch (modern alternative)
+alias gf='git checkout $(git branch | fzf)'  # interactive branch selection with fzf
+alias gb='git branch'                        # list local branches
+alias gba='git branch -a'                    # list all branches (local and remote)
+alias gbl='git branch --list'                # list local branches with pattern matching
+alias gbr='git branch -r'                    # list remote-tracking branches
 
 # ==============================================================
-# > move/create branches
-# ==============================================================
-
-alias gsw="git switch"                         # switch to existing branch (modern alternative)
-alias gf='git checkout $(git branch | fzf)'   # interactive branch selection with fzf
-alias gcb="git checkout -b"                    # create and switch to new branch
-
-# ==============================================================
-# > list branches
-# ==============================================================
-
-alias gb='git branch'                          # list local branches
-alias gba='git branch -a'                      # list all branches (local and remote)
-alias gbl='git branch --list'                  # list local branches with pattern matching
-alias gbr='git branch -r'                      # list remote-tracking branches
-alias gblr="git ls-remote"                     # list all remote references
-alias gblp="git ls-remote --heads origin | awk '{print $2}' | sed 's#refs/heads/##'"  # list remote branch names only
-
-# ==============================================================
-# > manipulate branches
+# > branch actions
 # ==============================================================
 
 alias gbn='git branch -m'                      # rename current branch
@@ -52,7 +39,17 @@ alias gbD='git branch -D'                      # delete local branch (force)
 alias gbdr='git push origin --delete'          # delete remote branch
 
 # ==============================================================
-# > stash operations
+# > git remotes
+# ==============================================================
+
+alias gblr="git ls-remote"                     # list all remote references
+alias gblp="git ls-remote --heads origin | awk '{print $2}' | sed 's#refs/heads/##'"  # list remote branch names only
+alias grml="git remote -v"                   # list all remotes with their URLs
+alias grma="git remote add"                  # add a new remote: git remote add <name> <url>
+alias grmr="git remote remove"               # remove a remote: git remote remove <name>
+
+# ==============================================================
+# > git stash
 # ==============================================================
 
 alias gt="git stash"                           # save current changes to stash
@@ -63,7 +60,7 @@ alias gtp="git stash pop"                      # apply and remove most recent st
 alias gtd="git stash drop"                     # delete specific stash entry
 
 # ==============================================================
-# > log operations
+# > git logs
 # ==============================================================
 
 alias gla="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -- | nl -v 0"  # colorful log with line numbers
@@ -72,17 +69,17 @@ alias glc="git log --decorate --graph --oneline --all"  # compact log showing al
 alias gld="git log --pretty=format:'%C(yellow)%h %Cred%ad %Cblue%an%Cgreen%d %Creset%s' --date=short --decorate --graph"  # detailed log with dates and authors
 
 # ==============================================================
-# > git configuration
+# > git config
 # ==============================================================
 
+alias gul='git config -l'                         # list all git configuration settings
 alias guu='git config --global user.name && git config --global user.email'  # show current global user info
 alias guc='git config --get credential.helper'    # show credential helper configuration
-alias gul='git config -l'                         # list all git configuration settings
 # alias gconfn='git config --global user.name'    # set global username
 # alias gconfe='git config --global user.email'   # set global email
 
 # ==============================================================
-# > git diff operations
+# > git diff
 # ==============================================================
 
 alias gdf="git diff"                             # shows unstaged changes
