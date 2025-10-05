@@ -202,19 +202,37 @@ function grems() {
 # Prints a given path with each directory colored differently for enhanced readability in the terminal.
 function cds() {
   path="$1"
-  IFS='/' read -ra parts <<<"$path"
   # 31-Red # 32-Green # 33-Yellow # 34-Blue # 35-Magenta # 36-Cyan # 37-White
   colors=(31 32 33 34 35 36 37)
   result=""
-  for i in "${!parts[@]}"; do
-    part="${parts[$i]}"
-    color_index=$((i % ${#colors[@]}))
-    color_code="${colors[$color_index]}"
-    result+="\033[0;${color_code}m${part}\033[0m"
-    if ((i < ${#parts[@]} - 1)); then
-      result+="/"
-    fi
-  done
+  
+  # Check if running in zsh or bash and use appropriate syntax
+  if [[ -n "$ZSH_VERSION" ]]; then
+    # zsh syntax
+    parts=(${(s:/:)path})
+    for ((i=1; i<=${#parts[@]}; i++)); do
+      part="${parts[$i]}"
+      color_index=$(((i-1) % ${#colors[@]}))
+      color_code="${colors[$((color_index+1))]}"
+      result+="\033[0;${color_code}m${part}\033[0m"
+      if ((i < ${#parts[@]})); then
+        result+="/"
+      fi
+    done
+  else
+    # bash syntax (Windows/Linux)
+    IFS='/' read -ra parts <<<"$path"
+    for i in "${!parts[@]}"; do
+      part="${parts[$i]}"
+      color_index=$((i % ${#colors[@]}))
+      color_code="${colors[$color_index]}"
+      result+="\033[0;${color_code}m${part}\033[0m"
+      if ((i < ${#parts[@]} - 1)); then
+        result+="/"
+      fi
+    done
+  fi
+  
   echo -e "$result"
 }
 
@@ -228,7 +246,7 @@ function gut() {
   case $user_choice in
   1)
     git config --global user.name "pfessas"
-    git config --global user.email "p.fessas@titancement.com"
+    git config --global user.email "p.fessas@titanmaterials.com"
     echo "Switched to takis/titan configuration"
     ;;
   2)
