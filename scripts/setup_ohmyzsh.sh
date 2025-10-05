@@ -11,11 +11,18 @@ export ZSH="$HOME/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 
-# ZSH_THEME="robbyrussell"
+# ZSH_THEME="agnoster"
+# ZSH_THEME="amuse"
+# ZSH_THEME="half-life"
 # ZSH_THEME="jonathan"
-# ZSH_THEME='agnoster'
-# ZSH_THEME='half-life'
-ZSH_THEME='powerlevel10k/powerlevel10k' # requires p10k installation
+# ZSH_THEME="macovsky"
+# ZSH_THEME="mgutz"
+# ZSH_THEME="miloshadzic"
+# ZSH_THEME="muse"
+# ZSH_THEME="pygmalion"
+# ZSH_THEME="sonicradish"
+# ZSH_THEME="robbyrussell"
+ZSH_THEME="powerlevel10k/powerlevel10k" # requires p10k installation
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
