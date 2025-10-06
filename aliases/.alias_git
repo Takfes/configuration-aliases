@@ -115,8 +115,8 @@ function gbt() {
 function bm() {
   # get current branch
   current_branch=$(git branch --show-current)
-  # get all local branches except for the current
-  local_branches=$(git branch | sed 's/\*//g' | grep -v "$current_branch")
+  # get all local branches except for the current, properly trimmed
+  local_branches=$(git branch | sed 's/^[* ]*//g' | grep -v "^$current_branch$" | grep -v '^$')
   echo "Please select a branch:"
   i=1
   for branch_name in $local_branches; do
@@ -133,17 +133,17 @@ function bm() {
     return
   fi
   # store the corresponding branch name in a variable named selected_branch
-  selected_branch=$(echo "$local_branches" | awk -v n="$selected_branch_number" 'NR==n{print $0;exit}')
+  selected_branch=$(echo "$local_branches" | awk -v n="$selected_branch_number" 'NR==n{print $0;exit}' | xargs)
   # switch to the selected branch
-  git switch $selected_branch
+  git switch "$selected_branch"
 }
 
 # Interactive branch deletion: select and delete local branch
 function bmd() {
   # get current branch
   current_branch=$(git branch --show-current)
-  # get all local branches except for the current
-  local_branches=$(git branch | sed 's/\*//g' | grep -v "$current_branch")
+  # get all local branches except for the current, properly trimmed
+  local_branches=$(git branch | sed 's/^[* ]*//g' | grep -v "^$current_branch$" | grep -v '^$')
 
   echo "Please select a branch:"
   i=1
@@ -161,9 +161,9 @@ function bmd() {
     return
   fi
   # store the corresponding branch name in a variable named selected_branch
-  selected_branch=$(echo "$local_branches" | awk -v n="$selected_branch_number" 'NR==n{print $0;exit}')
-  # switch to the selected branch
-  git branch -d $selected_branch
+  selected_branch=$(echo "$local_branches" | awk -v n="$selected_branch_number" 'NR==n{print $0;exit}' | xargs)
+  # delete selected branch
+  git branch -d "$selected_branch"
 }
 
 # list remote branches and checkout to local branch
